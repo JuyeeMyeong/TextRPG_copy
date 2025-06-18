@@ -66,8 +66,8 @@ public:
 
     bool HandlePlayerCommand(Command& command);
 private:
-    bool MonsterAttack(Command& command);
-    bool IsDead(Command& command);
+    bool MonsterAttack();
+    bool IsDead();
 };
 
 class ShopContents : public Contents

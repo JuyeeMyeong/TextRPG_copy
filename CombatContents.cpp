@@ -16,7 +16,7 @@ void CombatContents::InitContents()
 
 void CombatContents::EnterContents()
 {
-    int monsterID = 10001 + rand() % 10; // monster은 일단 10마리 있음, 이 중 랜덤 생성
+    int monsterID = 10001 + rand() % 10;
     MonsterData* data = Manager<DataManager>::Instance()->monsterData.getData(monsterID);
     monster->setData(data);
 
@@ -43,7 +43,18 @@ bool CombatContents::HandlePlayerCommand(Command& command)
         {
             player->attack(*monster);
             std::cout << "You attacked " << monster->getName() << "! [Monster HP: " << monster->GetHP() << "]\n";
-            MonsterAttack(command);
+            if (IsDead())
+            {
+                // 경험치 상승 처리 후 전투종료
+                return false;
+            }
+
+            MonsterAttack();
+            if(IsDead())
+            {
+                return false;
+            }
+
             return true;
         } else if (commandContext == 'p')
         {
@@ -63,7 +74,7 @@ bool CombatContents::HandlePlayerCommand(Command& command)
             std::cout << "You can only command 'a' for attack." << std::endl;
         }
 
-        isBattleOngoing  = IsDead(command);
+        isBattleOngoing  = !IsDead();
 
         if(isBattleOngoing)
         {
@@ -79,16 +90,14 @@ bool CombatContents::HandlePlayerCommand(Command& command)
     return false;
 }
 
-bool CombatContents::MonsterAttack(Command& command)
+bool CombatContents::MonsterAttack()
 {
-    if (monster->GetHP() <= 0) return true; // 몬스터가 죽으면 반격 X
-
     monster->attack(*player);
     std::cout << monster->getName() << " attacks! [Player HP: " << player->GetHP() << "]\n";
     return true;
 }
 
-bool CombatContents::IsDead(Command& command)
+bool CombatContents::IsDead()
 {
     if (player->GetHP() <= 0) {
         std::cout << "You died. Game Over.\n";
