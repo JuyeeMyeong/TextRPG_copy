@@ -65,7 +65,8 @@ public:
     virtual void ExitContents() override;
 
     bool HandlePlayerCommand(Command& command);
-    bool HandleMonsterAttack(Command& command);
+private:
+    bool MonsterAttack(Command& command);
     bool IsDead(Command& command);
 };
 

@@ -12,8 +12,6 @@ void CombatContents::InitContents()
     monster = new Monster();
 
     *sequencer << [this](Command& command) { return this->HandlePlayerCommand(command); };
-    *sequencer << [this](Command& command) { return this->HandleMonsterAttack(command); }; 
-    *sequencer += [this](Command& command) { return this->IsDead(command); };
 }
 
 void CombatContents::EnterContents()
@@ -45,7 +43,7 @@ bool CombatContents::HandlePlayerCommand(Command& command)
         {
             player->attack(*monster);
             std::cout << "You attacked " << monster->getName() << "! [Monster HP: " << monster->GetHP() << "]\n";
-            HandleMonsterAttack(command);
+            MonsterAttack(command);
             return true;
         } else if (commandContext == 'p')
         {
@@ -81,7 +79,7 @@ bool CombatContents::HandlePlayerCommand(Command& command)
     return false;
 }
 
-bool CombatContents::HandleMonsterAttack(Command& command)
+bool CombatContents::MonsterAttack(Command& command)
 {
     if (monster->GetHP() <= 0) return true; // 몬스터가 죽으면 반격 X
 
