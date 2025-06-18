@@ -47,6 +47,14 @@ bool CombatContents::HandlePlayerCommand(Command& command)
             std::cout << "You attacked " << monster->getName() << "! [Monster HP: " << monster->GetHP() << "]\n";
             HandleMonsterAttack(command);
             return true;
+        } else if (commandContext == 'p')
+        {
+            bool used = false;
+            
+            for (Item* item : player->getInventory())
+            {
+                // Potion 사용 처리 
+            }
         } else if (commandContext == 'x')
         {
             std::cout << "You ran away from the battle." << std::endl;

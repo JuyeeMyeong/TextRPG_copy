@@ -104,6 +104,11 @@ public:
     void setData(PlayerData* data);
     void levelUp();
     bool IsNicknameEmpty();
+
+    const std::vector<Item*>& getInventory() const 
+    {
+        return inventory;
+    }
     
     virtual void attack(Actor& target) override;
     virtual void damaged(const Actor& attacker) override;
