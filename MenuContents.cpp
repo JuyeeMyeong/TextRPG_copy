@@ -6,8 +6,8 @@
 
 void MenuContents::InitContents()
 {
-    *sequencer << this->IsNickNameNotEmpty;
-    *sequencer << this->CanChangeContents;
+    *sequencer << [this](Command& cmd) { return this->IsNickNameNotEmpty(cmd); };
+    *sequencer << [this](Command& cmd) { return this->CanChangeContents(cmd); };
 }
 
 void MenuContents::EnterContents()

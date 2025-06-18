@@ -24,6 +24,8 @@ public:
     GameManager();
     virtual ~GameManager() override;
 
+    Player* getPlayer() const { return player; }
+
     virtual void InitGame() override;
     virtual void EnterGame() override;
     virtual bool UpdateGame() override;

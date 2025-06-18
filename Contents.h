@@ -6,6 +6,7 @@
 
 class Command;
 class Monster;
+class Player;
 
 enum class ContentsType
 {
@@ -56,11 +57,16 @@ class CombatContents : public Contents
 {
 private:
     Monster* monster;
+    Player* player;
     
 public:
     virtual void InitContents() override;
     virtual void EnterContents() override;
     virtual void ExitContents() override;
+
+    bool HandlePlayerCommand(Command& command); // 공격, 전투 종료, 아이템 사용 로직
+    bool HandleMonsterAttack(Command& command); // 몬스터의 반격 로직, 플레이어가 공격하면 바로 실행
+    bool IsDead(Command& command); // 플레이어나 몬스터가 죽었는지 확인 -> 승패처리
 };
 
 class ShopContents : public Contents
