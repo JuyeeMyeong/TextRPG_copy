@@ -45,6 +45,7 @@ bool CombatContents::HandlePlayerCommand(Command& command)
         {
             player->attack(*monster);
             std::cout << "You attacked " << monster->getName() << "! [Monster HP: " << monster->GetHP() << "]\n";
+            HandleMonsterAttack(command);
             return true;
         } else if (commandContext == 'x')
         {
@@ -89,7 +90,7 @@ bool CombatContents::IsDead(Command& command)
     }
 
     if (monster->GetHP() <= 0) {
-        std::cout << "You defeated the monster!\n";
+        std::cout << "You defeated the monster! Congratulations\n";
         return false;
     }
 
