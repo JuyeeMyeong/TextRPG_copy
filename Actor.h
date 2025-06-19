@@ -46,6 +46,11 @@ public:
         return baseDamage * level + incDamage;
     }
 
+    int GetLevel() const
+    {
+        return level;
+    }
+
     int GetDefense() const
     {
         return baseDefense * level + incDefense;
@@ -96,8 +101,10 @@ private:
     PlayerData* data;
     
     std::vector<Item*> inventory;
+    int exp = 0;
+    int gold = 100;
+    int killCount = 0;
 
-    
 public:
     Player() : ItemUseable(this) { }
 
@@ -114,6 +121,17 @@ public:
     virtual void damaged(const Actor& attacker) override;
 
     virtual void useItem(Item&) override;
+    // 경험치 얻는 로직 구현
+
+    void addKillCount()
+    {
+        killCount++;
+    }
+
+    int getMonsterKillCount() const
+    {
+        return killCount;
+    }
 };
 
 class Monster : public Actor

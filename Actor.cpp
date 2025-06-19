@@ -67,8 +67,11 @@ void Monster::setData(MonsterData* data)
 
     level = data->getLevel();
     
-    baseHP = data->getHP();
-    baseDamage = data->getDamage();
+    //baseHP = data->getHP();
+    baseHP = rand() % (level * 11) + (level * 20);
+    //baseDamage = data->getDamage();
+    baseDamage = rand() % (level * 6) + (level * 5);
+
     baseDefense = data->getDefense();
 
     name = data->getName();
