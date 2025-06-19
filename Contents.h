@@ -58,6 +58,8 @@ class CombatContents : public Contents
 private:
     Monster* monster;
     Player* player;
+
+    bool bIsBoss = false;
     
 public:
     virtual void InitContents() override;

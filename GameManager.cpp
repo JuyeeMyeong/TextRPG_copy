@@ -5,8 +5,10 @@
 #include "Contents.h"
 #include "Actor.h"
 
+template<>
 GameManager* Manager<GameManager>::instance = nullptr;
 
+template<>
 GameManager* Manager<GameManager>::Instance()
 {
     if (instance == nullptr)
@@ -40,6 +42,7 @@ GameManager::~GameManager()
 
 void GameManager::InitGame()
 {
+    std::cout << "DEBUGGING: GameManager::InitGame()" << std::endl;
     contentsMap[ContentsType::Menu]->InitContents();
     contentsMap[ContentsType::Combat]->InitContents();
     contentsMap[ContentsType::Shop]->InitContents();
@@ -73,6 +76,21 @@ void GameManager::EnterGame()
 
 bool GameManager::UpdateGame()
 {
+    if (currentContents == ContentsType::Combat)
+    {
+        Command dummyCommand;
+        bool keepGoing = contentsMap[currentContents]->UpdateContents(dummyCommand);
+
+		if (!keepGoing)
+		{
+			contentsMap[currentContents]->ExitContents();
+            Command returnMenuCommand;
+            returnMenuCommand.setCommand('0');
+            ChangeContents(returnMenuCommand);
+		}
+        return true;
+    }
+
     Command currentCommand;
     if  (inputModule->Execute())
     {
@@ -90,10 +108,7 @@ bool GameManager::UpdateGame()
         return false;
     }
 
-    if (contentsMap[currentContents]->UpdateContents(currentCommand) == false)
-    {
-        return true;
-    }
+    bool keepGoing = contentsMap[currentContents]->UpdateContents(currentCommand);
 
     ChangeContents(currentCommand);
 
@@ -115,10 +130,14 @@ void GameManager::ChangeContents(Command& command)
     std::string commandContext = "";
     commandContext += command.getCommand();
 
+    std::cout << "DEBUGGING: Changing contents with command: " << command.getCommand() << std::endl;
+
     contentsMap[currentContents]->ExitContents();
     
     int commandNum = std::stoi(commandContext);
     currentContents = static_cast<ContentsType>(commandNum);
+
+    std::cout << "DEBUGGING: Switched to contents index: " << commandNum << std::endl;
 
     contentsMap[currentContents]->EnterContents();
 }

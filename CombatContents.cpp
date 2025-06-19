@@ -9,13 +9,21 @@
 
 void CombatContents::InitContents()
 {
+    std::cout << "DEBUGGING: combatcontents::initcontents() " << this << std::endl;
+
     monster = new Monster();
 
-    *sequencer << [this](Command& command) { return this->HandlePlayerCommand(command); };
+    *sequencer << [this](Command& command) 
+        { 
+            std::cout << "DEBUGGING: Executing HandlePlayerCommand" << std::endl;
+            return this->HandlePlayerCommand(command); 
+        };
 }
 
 void CombatContents::EnterContents()
 {
+    bIsBoss = false; 
+
     int monsterID = 10001 + rand() % 10;
     MonsterData* data = Manager<DataManager>::Instance()->monsterData.getData(monsterID);
     monster->setData(data);
@@ -25,70 +33,66 @@ void CombatContents::EnterContents()
     std::cout << "Combat" << std::endl;
 
     std::cout << monster->getName() << std::endl;
+
+    if (player->GetLevel() >= 10)
+    {
+        bIsBoss = true;
+
+        std::string bossName = "Boss " + monster->getName();
+        monster->SetName(bossName);
+
+        int bossHP = static_cast<int>(monster->GetHP() * (1.5 + rand() % 51 / 100.0f)); // 1.5 ~ 2.0
+        int bossDmg = static_cast<int>(monster->GetDamage() * (1.5 + rand() % 51 / 100.0f));
+    }
 }
 
 void CombatContents::ExitContents()
 {
-    
+    if (bIsBoss)
+    {
+        std::cout << " You cleared the game ! " << std::endl;
+        std::cout << "Total Monsters Defeated: " << player->getMonsterKillCount() << std::endl;
+        std::cout << "Thank you for playing!" << std::endl;
+
+        exit(0);
+        return;
+    }
+
+    std::cout << "DEBUGGING: ExitContents() of combat contents" << std::endl;
 }
 
 bool CombatContents::HandlePlayerCommand(Command& command)
 {
-    char commandContext = command.getCommand();
-    bool isBattleOngoing  = true;
-
-    while(isBattleOngoing)
+    static bool bMonsterIntroduced = false;
+    if (!bMonsterIntroduced)
     {
-        if(commandContext == 'a')
-        {
-            player->attack(*monster);
-            std::cout << "You attacked " << monster->getName() << "! [Monster HP: " << monster->GetHP() << "]\n";
-            if (IsDead())
-            {
-                // 경험치 상승 처리 후 전투종료
-                return false;
-            }
-
-            MonsterAttack();
-            if(IsDead())
-            {
-                return false;
-            }
-
-            return true;
-        } else if (commandContext == 'p')
-        {
-            bool used = false;
-            
-            for (Item* item : player->getInventory())
-            {
-                // Potion 사용 처리 
-            }
-        } else if (commandContext == 'x')
-        {
-            std::cout << "You ran away from the battle." << std::endl;
-            return false;
-
-        } else
-        {
-            std::cout << "You can only command 'a' for attack." << std::endl;
-        }
-
-        isBattleOngoing  = !IsDead();
-
-        if(isBattleOngoing)
-        {
-            std::cout << "Next Command: " << std::endl;
-            std::cout << "a. attack" << std::endl;
-            std::cout << "p. use potion" << std::endl;
-            std::cout << "x. run away (Finish the battle)" << std::endl;
-            std::cout << "Enter your choice:" << std::endl;
-            std::cin >> commandContext;
-        }
+        std::cout << monster->getName() << " appeared! HP: " << monster->GetHP() << ", Damage: " << monster->GetDamage() << std::endl;
+        bMonsterIntroduced = true;
     }
 
-    return false;
+    player->attack(*monster);
+    std::cout << "You attacked " << monster->getName() << "! [Monster HP: " << monster->GetHP() << "]\n";
+
+    if (IsDead())
+    {
+        bMonsterIntroduced = false;
+        return false;
+    }
+
+    MonsterAttack();
+
+    if (IsDead())
+    {
+        bMonsterIntroduced = false;
+        return false;
+    }
+
+    // 포션 사용 처리
+    // if (rand() % 100 < 30) { ... }
+
+    return true;
 }
+
 
 bool CombatContents::MonsterAttack()
 {
@@ -101,13 +105,36 @@ bool CombatContents::IsDead()
 {
     if (player->GetHP() <= 0) {
         std::cout << "You died. Game Over.\n";
-        return false;
+        return true;
     }
 
     if (monster->GetHP() <= 0) {
-        std::cout << "You defeated the monster! Congratulations\n";
-        return false;
+        std::cout << "You defeated " << monster->getName() << "! Congratulations\n";
+
+        // 경험치 얻기 + 레벨링
+        // 골드 얻기 10 ~ 20
+        int goldEarned = rand() % 11 + 10;
+
+        if(rand() % 100 < 30)
+        {
+            /*
+            Item* rewardItem;
+            if (rand() % 2 == 0)
+            {
+                rewardItem = new PotionItem();
+            } else
+            {
+                rewardItem = new UpgradeDamageItem();
+            }*/
+
+            // 아이템 인벤토리에 추가
+        }
+
+        player->addKillCount();
+        player->IncreaseHP(1100);
+
+        return true;
     }
 
-    return true;
+    return false;
 }
