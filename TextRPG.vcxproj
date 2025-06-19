@@ -156,7 +156,12 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Contents.cpp" />
+	<ClCompile Include="Manager.cpp" />
+	<ClCompile Include="MenuContents.cpp" />
+	<ClCompile Include="ShopContents.cpp" />
+	<ClCompile Include="CombatContents.cpp" />
     <ClCompile Include="DataManager.cpp" />
+	<ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameData.cpp" />
     <ClCompile Include="InputModule.cpp" />
     <ClCompile Include="Item.cpp" />
@@ -166,12 +171,27 @@
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Contents.h" />
-    <ClInclude Include="DataManager.h" />
+	<ClInclude Include="Manager.h" />
+	<ClInclude Include="MenuContents.h" />
+    <ClInclude Include="ShopContents.h" />
+	<ClInclude Include="DataManager.h" />
+	<ClInclude Include="GameManager.h" /> 
     <ClInclude Include="GameData.h" />
     <ClInclude Include="InputModule.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Parser.h" />
   </ItemGroup>
+	<ItemGroup>
+		<None Include="PlayerData.csv">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="MonsterData.csv">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="ItemData.csv">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

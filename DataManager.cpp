@@ -3,7 +3,7 @@
 #include "GameData.h"
 #include "Parser.h"
 
-template<typename TData = GameData>
+template<typename TData>
 DataContainer<TData>::~DataContainer()
 {
     for (auto data : dataContainer)
@@ -12,6 +12,7 @@ DataContainer<TData>::~DataContainer()
     }
 }
 
+template<>
 void DataContainer<PlayerData>::addData(PlayerData* data)
 {
     int containerIndex = dataContainer.size();
@@ -19,6 +20,7 @@ void DataContainer<PlayerData>::addData(PlayerData* data)
     this->dataContainer.push_back(data);
 }
 
+template<>
 PlayerData* DataContainer<PlayerData>::getData(int id)
 {
     if (dataIndexById.find(id) == dataIndexById.end())
@@ -29,6 +31,7 @@ PlayerData* DataContainer<PlayerData>::getData(int id)
     return dataContainer[dataIndexById[id]];
 }
 
+template<>
 void DataContainer<MonsterData>::addData(MonsterData* data)
 {
     int containerIndex = dataContainer.size();
@@ -36,6 +39,7 @@ void DataContainer<MonsterData>::addData(MonsterData* data)
     this->dataContainer.push_back(data);
 }
 
+template<>
 MonsterData* DataContainer<MonsterData>::getData(int id)
 {
     if (dataIndexById.find(id) == dataIndexById.end())
@@ -46,6 +50,7 @@ MonsterData* DataContainer<MonsterData>::getData(int id)
     return dataContainer[dataIndexById[id]];
 }
 
+template<>
 void DataContainer<ItemData>::addData(ItemData* data)
 {
     int containerIndex = dataContainer.size();
@@ -53,6 +58,7 @@ void DataContainer<ItemData>::addData(ItemData* data)
     this->dataContainer.push_back(data);
 }
 
+template<>
 ItemData* DataContainer<ItemData>::getData(int id)
 {
     if (dataIndexById.find(id) == dataIndexById.end())
@@ -80,8 +86,10 @@ void DataInitializer::Execute(DataManager& dataManager)
     }
 }
 
+template<>
 DataManager* Manager<DataManager>::instance = nullptr;
 
+template<>
 DataManager* Manager<DataManager>::Instance()
 {
     if (instance == nullptr)
